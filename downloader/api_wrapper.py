@@ -55,9 +55,21 @@ class APIWrapper():
 			response = self.send_api_request(request_params)
 			tracks_list += response['artisttracks']['track']
 			
-		# Format tracks	to dictionary with a list of plays
+		return tracks_list
+		
+	def format_api_request(self, params_dict):
+		"""Format API request"""
+		base_url = ('http://ws.audioscrobbler.com/2.0/?format=json'
+					'&api_key=' + self.api_key)
+		for param, value in params_dict.items():
+			base_url += '&' + param + '=' + value
+		return base_url
+		
+	def format_artist_tracks(self, unformatted_tracks):
+		"""Format tracks to a dictionary with a list of plays"""
 		formatted_tracks = {}
-		for track_info in tracks_list:				
+		
+		for track_info in unformatted_tracks:				
 			if track_info['name'] in formatted_tracks:
 				plays = formatted_tracks[track_info['name']]['plays']
 				plays.append(track_info['date'])
@@ -71,14 +83,6 @@ class APIWrapper():
 				formatted_tracks[track_info['name']] = track_data
 				
 		return formatted_tracks
-		
-	def format_api_request(self, params_dict):
-		"""Format API request"""
-		base_url = ('http://ws.audioscrobbler.com/2.0/?format=json'
-					'&api_key=' + self.api_key)
-		for param, value in params_dict.items():
-			base_url += '&' + param + '=' + value
-		return base_url
 		
 	def send_api_request(self, params_dict):
 		"""Send API request with given parameters"""
