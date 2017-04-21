@@ -33,11 +33,11 @@ class APIWrapperTestCase(unittest.TestCase):
 	def test_format_artist_tracks(self):
 		"""Test format_artist_tracks method"""
 		track_list = self.lastfm_api.get_all_artist_scrobbles('Dr. Dre')
-		formatted = self.lastfm_api.format_artist_tracks(track_list)
+		track_objs = self.lastfm_api.format_artist_tracks(track_list)
 		
 		total_track_count = 0
-		for track_info in formatted.values():
-			total_track_count += len(track_info['plays'])
+		for track in track_objs:
+			total_track_count += len(track.plays)
 		
 		self.assertEqual(total_track_count, len(track_list))
 		

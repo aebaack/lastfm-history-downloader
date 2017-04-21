@@ -1,10 +1,12 @@
 import requests
 
+from track import Track
+
 class APIWrapper():
 	"""Send API calls for determining scrobbles"""
 	
 	def __init__(self, api_key, username):
-		"""Determine username and API key"""
+		"""Initialize API credentials and URL"""
 		self.username = username
 		self.api_key = api_key
 		self.base_url = 'http://ws.audioscrobbler.com/2.0/?'
@@ -65,24 +67,30 @@ class APIWrapper():
 			base_url += '&' + param + '=' + value
 		return base_url
 		
-	def format_artist_tracks(self, unformatted_tracks):
+	def format_artist_tracks(self, unform_list):
 		"""Format tracks to a dictionary with a list of plays"""
-		formatted_tracks = {}
+		form_list = []
 		
-		for track_info in unformatted_tracks:				
-			if track_info['name'] in formatted_tracks:
-				plays = formatted_tracks[track_info['name']]['plays']
-				plays.append(track_info['date'])
+		for track_info in unform_list:
+			
+			# Find track in list or None if not found
+			name = track_info['name']
+			track = next((x for x in form_list if x.song == name), None)		
+			if track:
+				track.add_play(track_info['date'])
 			else:
-				track_data = {
-					'album': track_info['album'],
-					'mbid': track_info['mbid'],
-					'plays': [track_info['date']],
-					}
+				# Create a new instance of Track and add to list
+				artist = track_info['artist']
+				album = track_info['album']
+				mbid = track_info['mbid']
+				song = track_info['name']
 				
-				formatted_tracks[track_info['name']] = track_data
+				new_track = Track(artist, album, song, mbid)
+				new_track.add_play(track_info['date'])
 				
-		return formatted_tracks
+				form_list.append(new_track)
+				
+		return form_list
 		
 	def send_api_request(self, params_dict):
 		"""Send API request with given parameters"""
