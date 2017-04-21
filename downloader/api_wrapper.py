@@ -35,7 +35,10 @@ class APIWrapper():
 		
 	def get_all_artist_scrobbles(self, artist):
 		"""Get all scrobbles for an individual artist"""
+		
+		# Format API call and send request
 		request_params = {
+			'limit': '200',
 			'artist': artist,
 			'method': 'user.getartisttracks',
 			'user': self.username,
@@ -44,13 +47,30 @@ class APIWrapper():
 		
 		tracks_list = response['artisttracks']['track']
 		
+		# A single request is limited to the first 200 tracks,
+		# so additional calls may be needed to populate entire list
 		while len(response['artisttracks']['track']) > 0:
 			current_page = response['artisttracks']['@attr']['page']
 			request_params['page'] = str(int(current_page)+1)
 			response = self.send_api_request(request_params)
 			tracks_list += response['artisttracks']['track']
-		
-		return tracks_list
+			
+		# Format tracks	to dictionary with a list of plays
+		formatted_tracks = {}
+		for track_info in tracks_list:				
+			if track_info['name'] in formatted_tracks:
+				plays = formatted_tracks[track_info['name']]['plays']
+				plays.append(track_info['date'])
+			else:
+				track_data = {
+					'album': track_info['album'],
+					'mbid': track_info['mbid'],
+					'plays': [track_info['date']],
+					}
+				
+				formatted_tracks[track_info['name']] = track_data
+				
+		return formatted_tracks
 		
 	def format_api_request(self, params_dict):
 		"""Format API request"""
