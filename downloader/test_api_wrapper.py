@@ -30,6 +30,16 @@ class APIWrapperTestCase(unittest.TestCase):
 		self.assertIn('date', first_track)
 		self.assertIn('artist', first_track)
 		
+	def test_format_artist_tracks(self):
+		"""Test format_artist_tracks method"""
+		track_list = self.lastfm_api.get_all_artist_scrobbles('Dr. Dre')
+		formatted = self.lastfm_api.format_artist_tracks(track_list)
+		
+		total_track_count = 0
+		for track_info in formatted.values():
+			total_track_count += len(track_info['plays'])
+		
+		self.assertEqual(total_track_count, len(track_list))
 		
 api_key = input('Enter your API key: ')
 print("These tests can take awhile, since the tested user"
