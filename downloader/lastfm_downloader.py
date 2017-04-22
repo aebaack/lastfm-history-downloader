@@ -13,7 +13,7 @@ for artist in all_artists:
 	
 	form_scrobbles = scrobbles.format_artist_tracks(artist_scrobbles)
 	for track in form_scrobbles:
-		total_scrob = int(scrobbles.get_total_track_scrobbles(track))
+		total_scrob = scrobbles.get_total_track_scrobbles(track)
 
 		play = {
 			'uts': '0',

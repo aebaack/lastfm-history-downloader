@@ -74,7 +74,7 @@ class APIWrapper():
 			request_params['track'] = track.song
 			
 		response = self.send_api_request(request_params)
-		return response['track']['userplaycount']
+		return int(response['track']['userplaycount'])
 		
 	def format_api_request(self, params_dict):
 		"""Format API request"""
