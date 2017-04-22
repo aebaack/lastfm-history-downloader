@@ -37,7 +37,7 @@ class APIWrapperTestCase(unittest.TestCase):
 		
 		total_track_count = 0
 		for track in track_objs:
-			total_track_count += len(track.plays)
+			total_track_count += len(track.plays'])
 		
 		self.assertEqual(total_track_count, len(track_list))
 		

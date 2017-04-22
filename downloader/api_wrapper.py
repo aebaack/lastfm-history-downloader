@@ -59,6 +59,23 @@ class APIWrapper():
 			
 		return tracks_list
 		
+	def get_total_track_scrobbles(self, **track_info):
+		"""Get total scrobbles for an individual track"""
+		
+		request_params = {
+			'username': self.username,
+			'method': 'track.getInfo',
+			}
+			
+		if 'mbid' in track_info:
+			request_params['mbid'] = track_info['mbid']
+		else:
+			request_params['artist'] = track_info['artist']
+			request_params['track'] = track_info['track']
+			
+		response = self.send_api_request(request_params)
+		return response['track']['userplaycount']
+		
 	def format_api_request(self, params_dict):
 		"""Format API request"""
 		base_url = ('http://ws.audioscrobbler.com/2.0/?format=json'
