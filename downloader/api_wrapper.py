@@ -13,7 +13,6 @@ class APIWrapper():
 		
 	def get_all_artists(self):
 		"""Get all played artists for account"""		
-		
 		# Format API call and send request
 		request_params = {
 			'limit': '1000',
@@ -37,7 +36,6 @@ class APIWrapper():
 		
 	def get_all_artist_scrobbles(self, artist):
 		"""Get all scrobbles for an individual artist"""
-		
 		# Format API call and send request
 		request_params = {
 			'limit': '200',
@@ -61,12 +59,12 @@ class APIWrapper():
 		
 	def get_total_track_scrobbles(self, track):
 		"""Get total scrobbles for an individual track"""
-		
 		request_params = {
 			'username': self.username,
 			'method': 'track.getInfo',
 			}
 			
+		# Search by mbid if available, otherwise artist and track name
 		if track.mbid:
 			request_params['mbid'] = track.mbid
 		else:
@@ -88,15 +86,19 @@ class APIWrapper():
 		"""Format tracks to a dictionary with a list of plays"""
 		form_list = []
 		
+		# Consolidate list of individual tracks and plays into track
+		# objects with a play attribute
 		for track_info in unform_list:
 			
 			# Find track in list or None if not found
 			name = track_info['name']
-			track = next((x for x in form_list if x.song == name), None)		
+			track = next((x for x in form_list if x.song == name), None)
+			
+			# If track already in list add a new play, otherwise create
+			# a new track
 			if track:
 				track.add_play(track_info['date'])
 			else:
-				# Create a new instance of Track and add to list
 				artist = track_info['artist']
 				album = track_info['album']
 				mbid = track_info['mbid']

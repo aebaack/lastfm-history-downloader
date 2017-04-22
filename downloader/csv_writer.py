@@ -16,15 +16,6 @@ class CSVWriter():
 		time_unix = play['uts']
 		
 		return [artist, album, song, time, time_unix]
-	
-	def return_csv_writer(self):
-		"""Return csv writer object"""
-		access_mode = 'w'
-		if os.path.isfile(self.file_path):
-			access_mode = 'ab'
-			
-		with open(self.file_path, access_mode) as csv_file:
-			return csv.writer(csv_file)
 
 	def write_track_play_to_csv(self, writer, track, play):
 		"""Write track play to csv file"""
@@ -35,8 +26,10 @@ class CSVWriter():
 		"""Write track list to csv file"""
 		# Track number of successful tracks
 		counter = 0
-			
+
+		# Write track information to csv at provided file path
 		with open(self.file_path, 'w') as csv_file:
+			# Create writer object and add column headings
 			writer = csv.writer(csv_file)
 			writer.writerow(['Artist', 'Album', 'Song', 'Date', 'UTS'])
 			
@@ -45,6 +38,7 @@ class CSVWriter():
 					self.write_track_play_to_csv(writer, track, play)
 					counter += 1
 				
+				# Log progress
 				print("Logged " + track.song + " by " +
 						track.artist['#text'])
 				

@@ -14,6 +14,7 @@ class APIWrapperTestCase(unittest.TestCase):
 	
 	def test_get_all_artists(self):
 		"""Test get_all_artists method"""
+		# Get all artists for user and test properties of first artist
 		artists_list = self.lastfm_api.get_all_artists()
 		first_artist = artists_list[0]
 
@@ -23,6 +24,7 @@ class APIWrapperTestCase(unittest.TestCase):
 		
 	def test_get_all_artist_scrobbles(self):
 		"""Test get_all_artist_scrobbles method"""
+		# Get all scrobbles by artist and test properties of first track
 		track_list = self.lastfm_api.get_all_artist_scrobbles('Dr. Dre')
 		first_track = track_list[0]
 		
@@ -33,6 +35,7 @@ class APIWrapperTestCase(unittest.TestCase):
 		
 	def test_get_total_track_scrobbles(self):
 		"""Test get_total_track_scrobbles method"""
+		# Create a new track and test scrobble count
 		artist = {
 			'#text': 'David Bowie',
 			'mbid': '5441c29d-3602-4898-b1a1-b77fa23b8e50',
