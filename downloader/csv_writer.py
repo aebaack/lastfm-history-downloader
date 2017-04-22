@@ -10,12 +10,13 @@ class CSVWriter():
 	def format_track(self, track, play):
 		"""Format track for csv writing"""
 		artist = track.artist['#text']
-		album = track.album
+		album = track.album['#text']
+		album_mbid = track.album['mbid']
 		song = track.song
 		time = play['#text']
 		time_unix = play['uts']
 		
-		return [artist, album, song, time, time_unix]
+		return [artist, album, album_mbid, song, time, time_unix]
 
 	def write_track_play_to_csv(self, writer, track, play):
 		"""Write track play to csv file"""
@@ -31,7 +32,7 @@ class CSVWriter():
 		with open(self.file_path, 'w') as csv_file:
 			# Create writer object and add column headings
 			writer = csv.writer(csv_file)
-			writer.writerow(['Artist', 'Album', 'Song', 'Date', 'UTS'])
+			writer.writerow(['Artist', 'Album', 'Album MBID', 'Song', 'Date', 'UTS'])
 			
 			for track in tracks_list:
 				for play in track.plays:

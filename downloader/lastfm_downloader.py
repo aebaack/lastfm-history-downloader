@@ -1,4 +1,5 @@
 from api_wrapper import APIWrapper
+from csv_writer import CSVWriter
 
 # Determine credentials
 username = 'rj'
@@ -11,6 +12,7 @@ scrobbles = APIWrapper(api_key, username)
 completed_tracks = []
 all_artists = scrobbles.get_all_artists()
 for artist in all_artists:
+	counter = counter + 1
 	# Get all scrobbles for individual artist
 	name = artist['name']
 	artist_scrobbles = scrobbles.get_all_artist_scrobbles(name)
@@ -36,4 +38,6 @@ for artist in all_artists:
 		print('Completed ' + track.song + ' by ' + track.artist['#text'])
 	break
 
-print(completed_tracks)
+# Write completed tracks to csv
+writer = CSVWriter()
+writer.write_tracks_to_csv(completed_tracks)

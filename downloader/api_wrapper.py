@@ -1,4 +1,5 @@
 import requests
+from urllib.parse import quote
 
 from track import Track
 
@@ -79,6 +80,12 @@ class APIWrapper():
 		base_url = ('http://ws.audioscrobbler.com/2.0/?format=json'
 					'&api_key=' + self.api_key)
 		for param, value in params_dict.items():
+			# Percent encoding
+			if param == 'artist':
+				value = quote(value)
+			elif param == 'album':
+				value = quote(value)
+				
 			base_url += '&' + param + '=' + value
 		return base_url
 		

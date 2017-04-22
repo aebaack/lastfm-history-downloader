@@ -50,6 +50,23 @@ class APIWrapperTestCase(unittest.TestCase):
 		
 		self.assertTrue(total >= 1)
 		
+	def test_format_api_request(self):
+		"""Test format_api_request method"""
+		request_params = {
+			'album': 'Test && Test',
+			'artist': 'Test & test ! Test',
+			'limit': '200',
+			}
+		
+		request = self.lastfm_api.format_api_request(request_params)
+		
+		# Test percent encoding
+		self.assertIn('&album=Test%20%26%26%20Test', request)
+		self.assertIn('&artist=Test%20%26%20test%20%21%20Test', request)
+		
+		# Test normal parameter
+		self.assertIn('&limit=200', request)
+		
 	def test_format_artist_tracks(self):
 		"""Test format_artist_tracks method"""
 		track_list = self.lastfm_api.get_all_artist_scrobbles('Dr. Dre')
