@@ -1,6 +1,6 @@
 import unittest
 
-#from csv_writer import CSVWriter
+from csv_writer import CSVWriter
 from track import Track
 
 class CSVWriterTestCase(unittest.TestCase):
@@ -13,8 +13,20 @@ class CSVWriterTestCase(unittest.TestCase):
 			'mbid': '5441c29d-3602-4898-b1a1-b77fa23b8e50',
 			}
 		album = ('The Rise and Fall of Ziggy Stardust and the Spiders'
-				'from Mars')
+				' from Mars')
 		song = 'Five Years'
 		mbid = '9c9345d9-a631-484b-b66b-4e78aa776cb3'
+		play = {
+			'uts': '0',
+			'#text': '01 Jan 1970, 00:00',
+			}
 		
 		self.track = Track(artist, album, song, mbid)
+		self.track.add_play(play)
+		
+		self.writer = CSVWriter()
+
+	def test_write_track_to_csv(self):
+		test = self.writer.write_tracks_to_csv([self.track])
+
+unittest.main()
