@@ -25,7 +25,7 @@ class CSVWriter():
 			
 		with open(self.file_path, access_mode) as csv_file:
 			return csv.writer(csv_file)
-	
+
 	def write_track_play_to_csv(self, writer, track, play):
 		"""Write track play to csv file"""
 		formatted_track = self.format_track(track, play)
@@ -33,6 +33,9 @@ class CSVWriter():
 		
 	def write_tracks_to_csv(self, tracks_list):
 		"""Write track list to csv file"""
+		# Track number of successful tracks
+		counter = 0
+			
 		with open(self.file_path, 'w') as csv_file:
 			writer = csv.writer(csv_file)
 			writer.writerow(['Artist', 'Album', 'Song', 'Date', 'UTS'])
@@ -40,5 +43,9 @@ class CSVWriter():
 			for track in tracks_list:
 				for play in track.plays:
 					self.write_track_play_to_csv(writer, track, play)
+					counter += 1
+				
 				print("Logged " + track.song + " by " +
 						track.artist['#text'])
+				
+		return counter

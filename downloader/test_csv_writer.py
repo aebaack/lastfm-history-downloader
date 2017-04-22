@@ -1,3 +1,5 @@
+import csv
+from os import remove
 import unittest
 
 from csv_writer import CSVWriter
@@ -21,12 +23,38 @@ class CSVWriterTestCase(unittest.TestCase):
 			'#text': '01 Jan 1970, 00:00',
 			}
 		
-		self.track = Track(artist, album, song, mbid)
-		self.track.add_play(play)
+		track_1 = Track(artist, album, song, mbid)
+		track_1.add_play(play)
 		
-		self.writer = CSVWriter()
+		song = 'Soul Love'
+		mbid = 'e8afe383-1478-497e-90b1-7885c7f37f6e'
+		
+		track_2 = Track(artist, album, song, mbid)
+		track_2.add_play(play)
+		
+		self.track_list = [track_1, track_2]
+		
+		self.file_path = './scrobbles.csv'
+		self.writer = CSVWriter(self.file_path)
 
-	def test_write_track_to_csv(self):
-		test = self.writer.write_tracks_to_csv([self.track])
+	def test_write_tracks_to_csv(self):
+		"""Test write_tracks_to_csv method"""
+		logged_tracks = self.writer.write_tracks_to_csv(self.track_list)
+		
+		self.assertEqual(2, logged_tracks)
+		
+		with open(self.file_path, 'r') as csv_file:
+			reader = csv.reader(csv_file)
+			
+			next(reader)
+			first_track = next(reader)
+			second_track = next(reader)
+			
+		self.assertIn('Five Years', first_track)
+		self.assertIn('Soul Love', second_track)
+			
+		self.assertEqual(3, reader.line_num)
+		
+		remove(self.file_path)
 
 unittest.main()
