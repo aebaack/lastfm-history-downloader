@@ -73,7 +73,11 @@ class APIWrapper():
 			request_params['track'] = track.song
 			
 		response = self.send_api_request(request_params)
-		return int(response['track']['userplaycount'])
+		
+		try:
+			return int(response['track']['userplaycount'])
+		except KeyError:
+			return 0
 		
 	def format_api_request(self, params_dict):
 		"""Format API request"""

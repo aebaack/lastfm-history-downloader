@@ -1,24 +1,34 @@
 from api_wrapper import APIWrapper
 from csv_writer import CSVWriter
 
+# Display information
+print('\n =============== LAST.FM HISTORY DOWNLOADER ===============')
+print(' == https://github.com/aebaack/lastfm-history-downloader ==')
+print(' ==========================================================\n')
+
 # Determine credentials
-username = 'rj'
-api_key = input('Enter your API key: ')
+username = input(' Enter your last.fm username: ')
+api_key = input(' Enter your API key: ')
 
 # Create new instance of APIWrapper
 scrobbles = APIWrapper(api_key, username)
+
+print('\n - Searching for all artists in ' + username + "'s library")
 
 # Traverse list of artists for user and create list of tracks
 completed_tracks = []
 all_artists = scrobbles.get_all_artists()
 for artist in all_artists:
-	counter = counter + 1
 	# Get all scrobbles for individual artist
 	name = artist['name']
+	print('\n ' + name + ' -------------------------------------------')
+	print(' - Searching for all songs by ' + name)
 	artist_scrobbles = scrobbles.get_all_artist_scrobbles(name)
 	
 	# Traverse list of formatted scrobbles
 	form_scrobbles = scrobbles.format_artist_tracks(artist_scrobbles)
+	print(' - Searching for scrobble data for ' + 
+			str(len(form_scrobbles)) + ' tracks')
 	for track in form_scrobbles:
 		# Get total scrobbles for track
 		total_scrob = scrobbles.get_total_track_scrobbles(track)
@@ -35,9 +45,7 @@ for artist in all_artists:
 		
 		completed_tracks.append(track)
 		
-		print('Completed ' + track.song + ' by ' + track.artist['#text'])
-	break
-
 # Write completed tracks to csv
+print(' - Writing scrobbles to file')
 writer = CSVWriter()
 writer.write_tracks_to_csv(completed_tracks)

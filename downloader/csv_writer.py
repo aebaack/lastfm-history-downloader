@@ -39,8 +39,4 @@ class CSVWriter():
 					self.write_track_play_to_csv(writer, track, play)
 					counter += 1
 				
-				# Log progress
-				print("Logged " + track.song + " by " +
-						track.artist['#text'])
-				
 		return counter
