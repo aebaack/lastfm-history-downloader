@@ -6,6 +6,29 @@ class CSVWriter():
 	def __init__(self, file_path='./scrobbles.csv'):
 		"""Initialize file name where data is saved"""
 		self.file_path = file_path
+
+	# TODO: Reformat so that append_tracks and write_tracks use same
+	# code
+	def append_tracks(self, tracks_list):
+		"""Append track list to csv file"""
+		# Track number of successful tracks
+		counter = 0
+		
+		# Append track information to csv at provided file path
+		with open(self.file_path, 'a+') as csv_file:
+			# Create writer object
+			writer = csv.writer(csv_file)
+			
+			for track in tracks_list:
+				for play in track.plays:
+					self.write_track_play_to_csv(writer, track, play)
+					counter += 1
+		
+		return counter
+		
+	def override_previous_csv(self):
+		f = open(self.file_path, 'w')
+		f.close()
 		
 	def format_track(self, track, play):
 		"""Format track for csv writing"""

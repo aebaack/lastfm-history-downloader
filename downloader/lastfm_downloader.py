@@ -68,15 +68,17 @@ def main():
 	print('\n - Searching for all artists for ' + user['username'])
 	all_artists = scrobbles.get_all_artists()
 	
+	# Create new CSVWriter
+	writer = CSVWriter()
+	writer.override_previous_csv()
+	
 	# Determine total listening history for each track
 	all_tracks = []
 	for artist in all_artists:
-		all_tracks += find_artist_songs(scrobbles, artist)
-	
-	# Write user information to csv file	
-	print (' - Writing scrobbles to file')
-	writer = CSVWriter()
-	writer.write_tracks_to_csv(completed_tracks)
+		artist_tracks = find_artist_songs(scrobbles, artist)
+		writer.append_tracks(artist_tracks)
+		print(' - Writing ' + str(len(artist_tracks)) + ' scrobbles ' +
+				'to ' + writer.file_path)
 
 if __name__ == '__main__':
 	main()
