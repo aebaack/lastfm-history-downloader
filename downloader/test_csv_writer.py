@@ -77,7 +77,7 @@ class CSVWriterTestCase(unittest.TestCase):
 	def test_write_single_track_to_csv(self):
 		"""Test writing a single track"""
 		# Log tracks to csv file
-		track = self.writer.write_tracks_to_csv([self.track_list[0]])
+		track = self.writer.add_tracks_to_csv([self.track_list[0]], 'w')
 		self.assertEqual(1, track)
 		
 		# Read file to ensure data was written

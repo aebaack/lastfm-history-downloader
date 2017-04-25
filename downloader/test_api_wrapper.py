@@ -8,8 +8,8 @@ class APIWrapperTestCase(unittest.TestCase):
 	
 	def setUp(self):
 		"""Setup username and API key"""
+		self.api_key = '9a5bb0d39039d14b7f3cfb2fafbabc73'
 		self.username = 'rj'
-		self.api_key = api_key
 		self.lastfm_api = APIWrapper(self.api_key, self.username)
 	
 	def test_get_all_artists(self):
@@ -78,7 +78,6 @@ class APIWrapperTestCase(unittest.TestCase):
 		
 		self.assertEqual(total_track_count, len(track_list))
 		
-api_key = input('Enter your API key: ')
 print("These tests can take awhile, since the tested user"
 		" has a lot of data...")
 
