@@ -32,7 +32,10 @@ class CSVWriter():
 	def override_previous_csv(self):
 		"""Override previous files at given path"""
 		f = open(self.file_path, 'w')
-		f.close()
+		with open(self.file_path, 'w') as csv_file:
+			writer = csv.writer(csv_file)
+			writer.writerow(['Artist', 'Album', 'Album MBID',
+							 'Song', 'Date', 'UTS'])
 		
 	def format_track(self, track, play):
 		"""Format track for csv writing"""

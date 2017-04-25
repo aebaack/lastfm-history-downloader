@@ -5,9 +5,12 @@ def determine_credentials():
 	"""Determine user credentials"""
 	username = input(' Enter your last.fm username: ')
 	api_key = input(' Enter your API key: ')
+	save_location = input(' Enter a file save location or press enter' +
+		' for current directory: ')
 	
 	return {
 		'api_key': api_key,
+		'save_location': save_location,
 		'username': username,
 		}
 
@@ -67,9 +70,13 @@ def main():
 	# Determine list of all scrobbled artists for the user
 	print('\n - Searching for all artists for ' + user['username'])
 	all_artists = scrobbles.get_all_artists()
+	print(' - Found ' + str(len(all_artists)) + ' artists')
 	
 	# Create new CSVWriter
-	writer = CSVWriter()
+	if user['save_location']:
+		writer = CSVWriter(user['save_location'])
+	else:
+		writer = CSVWriter('./' + user['username'] + '.csv')
 	writer.override_previous_csv()
 	
 	# Determine total listening history for each track
