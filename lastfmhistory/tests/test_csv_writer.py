@@ -2,8 +2,8 @@ import csv
 from os import remove
 import unittest
 
-from csv_writer import CSVWriter
-from track import Track
+from lastfmhistory.csv_writer import CSVWriter
+from lastfmhistory.track import Track
 
 class CSVWriterTestCase(unittest.TestCase):
 	"""Tests for csv_writer.py"""

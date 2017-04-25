@@ -1,5 +1,5 @@
-from api_wrapper import APIWrapper
-from csv_writer import CSVWriter
+from lastfmhistory.api_wrapper import APIWrapper
+from lastfmhistory.csv_writer import CSVWriter
 
 def determine_credentials():
 	"""Determine user credentials"""

@@ -1,7 +1,7 @@
 import requests
 from urllib.parse import quote
 
-from track import Track
+from lastfmhistory.track import Track
 
 class APIWrapper():
 	"""Send API calls for determining scrobbles"""

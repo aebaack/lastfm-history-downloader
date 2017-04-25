@@ -1,7 +1,7 @@
 import unittest
 
-from api_wrapper import APIWrapper
-from track import Track
+from lastfmhistory.api_wrapper import APIWrapper
+from lastfmhistory.track import Track
 
 class APIWrapperTestCase(unittest.TestCase):
 	"""Tests for api_wrapper.py"""
