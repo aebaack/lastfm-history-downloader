@@ -39,8 +39,8 @@ class APIWrapper():
 		"""Get all scrobbles for an individual artist"""
 		# Format API call and send request
 		request_params = {
-			'limit': '200',
 			'artist': artist,
+			'limit': '200',
 			'method': 'user.getartisttracks',
 			'user': self.username,
 			}
@@ -58,8 +58,23 @@ class APIWrapper():
 			
 		return tracks_list
 		
+	def get_all_songs_by_artist(self, artist):
+		"""Get top 100 songs by given artist"""
+		# Format API call and send request
+		request_params = {
+			'artist': artist,
+			'limit': '100',
+			'method': 'artist.gettoptracks',
+			}
+		response = self.send_api_request(request_params)
+		
+		# Return top tracks list by artist
+		top_tracks = response['toptracks']['track']
+		return top_tracks
+		
 	def get_total_track_scrobbles(self, track):
 		"""Get total scrobbles for an individual track"""
+		# Format API call and send request
 		request_params = {
 			'username': self.username,
 			'method': 'track.getInfo',
@@ -74,6 +89,7 @@ class APIWrapper():
 			
 		response = self.send_api_request(request_params)
 		
+		# Return playcount or 0 if it does not exist
 		try:
 			return int(response['track']['userplaycount'])
 		except KeyError:
