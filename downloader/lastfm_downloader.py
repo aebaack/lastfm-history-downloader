@@ -76,7 +76,7 @@ def main():
 	all_tracks = []
 	for artist in all_artists:
 		artist_tracks = find_artist_songs(scrobbles, artist)
-		writer.append_tracks(artist_tracks)
+		writer.add_tracks_to_csv(artist_tracks, 'a')
 		print(' - Writing ' + str(len(artist_tracks)) + ' scrobbles ' +
 				'to ' + writer.file_path)
 
