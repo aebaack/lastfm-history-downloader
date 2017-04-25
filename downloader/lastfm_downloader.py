@@ -3,11 +3,12 @@ from csv_writer import CSVWriter
 
 def determine_credentials():
 	"""Determine user credentials"""
+	api_key = '9a5bb0d39039d14b7f3cfb2fafbabc73'
+
 	username = input(' Enter your last.fm username: ')
-	api_key = input(' Enter your API key: ')
 	save_location = input(' Enter a file save location or press enter' +
 		' for current directory: ')
-	
+
 	return {
 		'api_key': api_key,
 		'save_location': save_location,
