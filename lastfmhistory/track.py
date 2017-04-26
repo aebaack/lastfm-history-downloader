@@ -12,3 +12,13 @@ class Track():
 	def add_play(self, play):
 		"""Add a new play to the track"""
 		self.plays.append(play)
+		
+	def add_imported_plays(self, amount_to_add):
+		"""Add additional plays that have no date"""
+		play = {
+			'uts': '0',
+			'#text': '01 Jan 1970, 00:00',
+			}
+		
+		for _ in range(amount_to_add):
+			self.add_play(play)

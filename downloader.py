@@ -50,12 +50,7 @@ def find_artist_songs(api_wrapper, artist):
 		# Add additional plays until list of recent scrobbles is as
 		# long as the list of total scrobbles
 		# This ensures that imported scrobbles are not ignored
-		play = {
-			'uts': '0',
-			'#text': '01 Jan 1970, 00:00',
-			}
-		while len(track.plays) < total_scrob:
-			track.add_play(play)
+		track.add_imported_plays(total_scrob - len(track.plays))
 		
 		completed_tracks.append(track)
 	
@@ -97,15 +92,11 @@ def search_artist_top_100(api_wrapper, comp_tracks, artist):
 				print(total)
 				
 				if total > 0:
-					play = {
-						'uts': '0',
-						'#text': '01 Jan 1970, 00:00',
-						}
-					while len(new_track.plays) < total_scrob:
-						new_track.add_play(play)
-						counter += 1
+					new_track.add_imported_plays(total)
+					counter += total
 						
 					new_tracks.append(new_track)
+					
 		print(' - Found ' + str(counter) + ' plays out of the ' +
 				'missing ' + str(total_art_scrob - comp_count))
 	return new_tracks
