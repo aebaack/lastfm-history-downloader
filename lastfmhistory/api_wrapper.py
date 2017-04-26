@@ -72,6 +72,21 @@ class APIWrapper():
 		top_tracks = response['toptracks']['track']
 		return top_tracks
 		
+	def get_total_artist_scrobbles(self, artist):
+		"""Get total scrobble count for an artist"""
+		# Format API call and send request
+		request_params = {
+			'artist': artist,
+			'username': self.username,
+			'method': 'artist.getinfo',
+			}
+		response = self.send_api_request(request_params)
+		
+		try:
+			return int(response['artist']['stats']['userplaycount'])
+		except KeyError:
+			return 0
+		
 	def get_total_track_scrobbles(self, track):
 		"""Get total scrobbles for an individual track"""
 		# Format API call and send request

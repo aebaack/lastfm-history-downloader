@@ -45,6 +45,12 @@ class APIWrapperTestCase(unittest.TestCase):
 		self.assertTrue(first_track['name'] == 'Stronger')
 		self.assertTrue(second_track['name'] == 'Heartless')
 		
+	def test_get_total_artist_scrobbles(self):
+		"""Test get_total_artist_scrobbles method"""
+		total = self.lastfm_api.get_total_artist_scrobbles('Metallica')
+		
+		self.assertTrue(total >= 878)
+		
 	def test_get_total_track_scrobbles(self):
 		"""Test get_total_track_scrobbles method"""
 		# Create a new track and test scrobble count
