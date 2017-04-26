@@ -60,6 +60,7 @@ class APIWrapper():
 		
 	def get_all_recent_scrobbles(self):
 		"""Get all recent scrobbles for a user"""
+		print('\n - Searching through all recent scrobble history')
 		# Format API call and send request
 		request_params = {
 			'limit': '1000',
@@ -70,6 +71,8 @@ class APIWrapper():
 		
 		tracks_list = response['recenttracks']['track']
 		
+		total_pages = response['recenttracks']['@attr']['totalPages']
+		
 		# A single request is limited to the first 1000 tracks, so
 		# additional calls may be needed to populate entire list
 		while len(response['recenttracks']['track']) > 0:
@@ -77,6 +80,7 @@ class APIWrapper():
 			request_params['page'] = str(int(current_page)+1)
 			response = self.send_api_request(request_params)
 			tracks_list += response['recenttracks']['track']
+			print(' - Page ' + current_page + ' out of ' + total_pages)
 		
 		return tracks_list
 		

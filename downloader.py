@@ -145,11 +145,11 @@ def main():
 					'to ' + writer.file_path)
 	else:
 		# Search through recent track history to find all info
-		print('\n - Searching through all scrobbling history')
-		print(' - This can take awhile')
-		
 		all_tracks = scrobbles.get_all_recent_scrobbles()
-		writer.add_tracks_to_csv(artist_tracks, 'w')
+		form_tracks = scrobbles.format_artist_tracks(all_tracks)
+		writer.add_tracks_to_csv(form_tracks, 'w')
+	
+	print('\n - Completed')
 		
 if __name__ == '__main__':
 	main()
