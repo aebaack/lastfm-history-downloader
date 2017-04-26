@@ -33,18 +33,23 @@ def display_introduction():
 	"""Display opening instructions to the terminal"""
 	print('\n =============== LAST.FM HISTORY DOWNLOADER =============')
 	print(' = https://github.com/aebaack/lastfm-history-downloader =')
-	print(' ========================================================\n')
+	print(' ========================================================')
+	print('\n - Note: Do not scobble while this program is running\n')
 
 def find_artist_songs(api_wrapper, artist):
 	"""Search for songs by given artist and pull additional info"""
 	# Display artist information
 	name = artist['name']
+	
 	display_current_artist(name)
 	print(' - Determining scrobbled tracks')
 
 	# Determine scrobbling information for given artist
 	artist_scrobbles = api_wrapper.get_all_artist_scrobbles(name)
 	form_scrob = api_wrapper.format_artist_tracks(artist_scrobbles)
+	
+	if len(form_scrob) == 0:
+		return []
 
 	# Display number of tracks to search for
 	print(' - Searching for total scrobble count for ' + 
@@ -101,7 +106,6 @@ def search_artist_top_100(api_wrapper, comp_tracks, artist):
 			if not track_already_completed:
 				new_track = Track({'#text': artist}, {'#text': 'test', 'mbid': ''}, track['name'], '')
 				total = api_wrapper.get_total_track_scrobbles(new_track)
-				print(total)
 
 				if total > 0:
 					new_track.add_imported_plays(total)
@@ -128,9 +132,13 @@ def main():
 	writer = CSVWriter(user['save_location'])
 	writer.override_previous_csv()
 	
+	# Search through recent track history
+	recent_tracks = scrobbles.get_all_recent_scrobbles()
+	form_recent_tracks = scrobbles.format_artist_tracks(recent_tracks)
+	
 	# If user has imports, all listening history cannot be found by
 	# only looking through recent tracks
-	if user['imports']:
+	if user['imports']:		
 		# Determine list of all scrobbled artists for the user
 		print('\n - Searching for all artists for ' + user['username'])
 		all_artists = scrobbles.get_all_artists()
@@ -140,14 +148,22 @@ def main():
 		all_tracks = []
 		for artist in all_artists:
 			artist_tracks = find_artist_songs(scrobbles, artist)
+			
+			# The lastfm api will not pull up user data for artists with
+			# special characters in their name, even with percent
+			# encoding. Recent track history is used for artists that 
+			# fall under this category.
+			if len(artist_tracks) == 0:
+				for track in form_recent_tracks:
+					if track.artist['#text'] == artist['name']:
+						artist_tracks.append(track)
+			
 			writer.add_tracks_to_csv(artist_tracks, 'a')
-			print(' - Writing ' + str(len(artist_tracks)) + ' scrobbles ' +
-					'to ' + writer.file_path)
+			print(' - Writing ' + str(len(artist_tracks)) + 
+					' scrobbles to ' + writer.file_path)
 	else:
-		# Search through recent track history to find all info
-		all_tracks = scrobbles.get_all_recent_scrobbles()
-		form_tracks = scrobbles.format_artist_tracks(all_tracks)
-		writer.add_tracks_to_csv(form_tracks, 'w')
+		# Write recent track history to file
+		writer.add_tracks_to_csv(form_recent_tracks, 'w')
 	
 	print('\n - Completed')
 		
