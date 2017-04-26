@@ -1,5 +1,6 @@
 from lastfmhistory.api_wrapper import APIWrapper
 from lastfmhistory.csv_writer import CSVWriter
+from lastfmhistory.track import Track
 
 def determine_credentials():
 	"""Determine user credentials"""
@@ -58,7 +59,57 @@ def find_artist_songs(api_wrapper, artist):
 		
 		completed_tracks.append(track)
 	
+	# Search through top 100 for any missed tracks
+	missed = search_artist_top_100(api_wrapper, completed_tracks, name)
+	completed_tracks += missed
+	
 	return completed_tracks
+	
+def search_artist_top_100(api_wrapper, comp_tracks, artist):
+	"""Search top 100 tracks by artist to find additional scrobbles"""
+	# Determine total artist scrobbles to compare against logged amount
+	total_art_scrob = api_wrapper.get_total_artist_scrobbles(artist)
+	
+	# Determine total completed scrobbles for the artist
+	comp_count = 0
+	for track in comp_tracks:
+		comp_count += len(track.plays)
+	
+	# If logged amount is less than total, search through top tracks to
+	# find additional missed scrobbles
+	new_tracks = []
+	if comp_count < total_art_scrob:
+		print(' - Searching through top 100 songs to find any missed' +
+				' tracks')
+		top_tracks = api_wrapper.get_all_songs_by_artist(artist)
+		
+		counter = 0
+		for track in top_tracks:
+			track_already_completed = False
+			
+			for comp_track in comp_tracks:
+				if track['name'] == comp_track.song:
+					track_already_completed = True
+					
+			if not track_already_completed:
+				new_track = Track({'#text': artist}, 'test', track['name'], '')
+				total = api_wrapper.get_total_track_scrobbles(new_track)
+				print(total)
+				
+				if total > 0:
+					play = {
+						'uts': '0',
+						'#text': '01 Jan 1970, 00:00',
+						}
+					while len(new_track.plays) < total_scrob:
+						new_track.add_play(play)
+						counter += 1
+						
+					new_tracks.append(new_track)
+		print(' - Found ' + str(counter) + ' plays out of the ' +
+				'missing ' + str(total_art_scrob - comp_count))
+	return new_tracks
+			
 
 def main():
 	"""Download listening history for input user"""
