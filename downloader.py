@@ -7,11 +7,20 @@ def determine_credentials():
 	api_key = '9a5bb0d39039d14b7f3cfb2fafbabc73'
 
 	username = input(' Enter your last.fm username: ')
+	
+	has_imports = input(' Did you ever import plays to your library ' +
+		'(y/n): ')
+	if has_imports.lower() == 'y':
+		imports = True
+	else:
+		imports = False
+		
 	save_location = input(' Enter a file save location or press enter' +
-		' for current directory: ')
+		' for current directory: ') or './' + username + '.csv'
 
 	return {
 		'api_key': api_key,
+		'imports': imports,
 		'save_location': save_location,
 		'username': username,
 		}
@@ -114,26 +123,33 @@ def main():
 	# Create new instance of APIWrapper
 	user = determine_credentials()
 	scrobbles = APIWrapper(user['api_key'], user['username'])
-
-	# Determine list of all scrobbled artists for the user
-	print('\n - Searching for all artists for ' + user['username'])
-	all_artists = scrobbles.get_all_artists()
-	print(' - Found ' + str(len(all_artists)) + ' artists')
-
+	
 	# Create new CSVWriter
-	if user['save_location']:
-		writer = CSVWriter(user['save_location'])
-	else:
-		writer = CSVWriter('./' + user['username'] + '.csv')
+	writer = CSVWriter(user['save_location'])
 	writer.override_previous_csv()
+	
+	# If user has imports, all listening history cannot be found by
+	# only looking through recent tracks
+	if user['imports']:
+		# Determine list of all scrobbled artists for the user
+		print('\n - Searching for all artists for ' + user['username'])
+		all_artists = scrobbles.get_all_artists()
+		print(' - Found ' + str(len(all_artists)) + ' artists')
 
-	# Determine total listening history for each track
-	all_tracks = []
-	for artist in all_artists:
-		artist_tracks = find_artist_songs(scrobbles, artist)
-		writer.add_tracks_to_csv(artist_tracks, 'a')
-		print(' - Writing ' + str(len(artist_tracks)) + ' scrobbles ' +
-				'to ' + writer.file_path)
-
+		# Determine total listening history for each track
+		all_tracks = []
+		for artist in all_artists:
+			artist_tracks = find_artist_songs(scrobbles, artist)
+			writer.add_tracks_to_csv(artist_tracks, 'a')
+			print(' - Writing ' + str(len(artist_tracks)) + ' scrobbles ' +
+					'to ' + writer.file_path)
+	else:
+		# Search through recent track history to find all info
+		print('\n - Searching through all scrobbling history')
+		print(' - This can take awhile')
+		
+		all_tracks = scrobbles.get_all_recent_scrobbles()
+		writer.add_tracks_to_csv(artist_tracks, 'w')
+		
 if __name__ == '__main__':
 	main()
