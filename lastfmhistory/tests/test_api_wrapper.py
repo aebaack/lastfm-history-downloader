@@ -25,11 +25,21 @@ class APIWrapperTestCase(unittest.TestCase):
 	def test_get_all_artist_scrobbles(self):
 		"""Test get_all_artist_scrobbles method"""
 		# Get all scrobbles by artist and test properties of first track
-		track_list = self.lastfm_api.get_all_artist_scrobbles(
-		'Dr. Dre')
+		artist = 'Dr. Dre'
+		track_list = self.lastfm_api.get_all_artist_scrobbles(artist)
 		first_track = track_list[0]
 		
 		self.assertTrue(len(track_list) >= 748)
+		self.assertIn('name', first_track)
+		self.assertIn('date', first_track)
+		self.assertIn('artist', first_track)
+		
+	def test_get_all_recent_scrobbles(self):
+		"""Test get_all_recent_scrobbles method"""
+		recent_scrobbles = self.lastfm_api.get_all_recent_scrobbles()
+		first_track = recent_scrobbles[0]
+		
+		self.assertTrue(len(recent_scrobbles) >= 128224)
 		self.assertIn('name', first_track)
 		self.assertIn('date', first_track)
 		self.assertIn('artist', first_track)

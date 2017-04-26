@@ -90,7 +90,7 @@ def search_artist_top_100(api_wrapper, comp_tracks, artist):
 			# If the track has not been completed, create a new track
 			# and add the necessary amount of plays
 			if not track_already_completed:
-				new_track = Track({'#text': artist}, 'test', track['name'], '')
+				new_track = Track({'#text': artist}, {'#text': 'test', 'mbid': ''}, track['name'], '')
 				total = api_wrapper.get_total_track_scrobbles(new_track)
 				print(total)
 

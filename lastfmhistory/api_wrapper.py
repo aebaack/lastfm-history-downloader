@@ -58,6 +58,28 @@ class APIWrapper():
 			
 		return tracks_list
 		
+	def get_all_recent_scrobbles(self):
+		"""Get all recent scrobbles for a user"""
+		# Format API call and send request
+		request_params = {
+			'limit': '1000',
+			'method': 'user.getrecenttracks',
+			'user': self.username,
+			}
+		response = self.send_api_request(request_params)
+		
+		tracks_list = response['recenttracks']['track']
+		
+		# A single request is limited to the first 1000 tracks, so
+		# additional calls may be needed to populate entire list
+		while len(response['recenttracks']['track']) > 0:
+			current_page = response['recenttracks']['@attr']['page']
+			request_params['page'] = str(int(current_page)+1)
+			response = self.send_api_request(request_params)
+			tracks_list += response['recenttracks']['track']
+		
+		return tracks_list
+		
 	def get_all_songs_by_artist(self, artist):
 		"""Get top 100 songs by given artist"""
 		# Format API call and send request
